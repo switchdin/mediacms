@@ -1,0 +1,2 @@
+to deploy change all [image] tags to a real image version
+also set ingress hostname

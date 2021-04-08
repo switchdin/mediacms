@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-worker-long
+spec:
+  selector:
+    matchLabels:
+      app: celery-worker-long
+  template:
+    metadata:
+      labels:
+        app: celery-worker-long
+    spec:
+      containers:
+      - name: celery-worker-long
+        image: [image]
+        # image: mediacms/mediacms
+        command: [ "/bin/bash","-c" ]
+        args:
+          - 
+            mkdir -p /home/mediacms.io/mediacms/cms/;
+            cp /cms/settings.py /home/mediacms.io/mediacms/cms/settings.py;
+            ./deploy/docker/entrypoint.sh ./deploy/docker/start.sh
+        # imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "1000Mi"
+            cpu: "100m" 
+          limits:
+            memory: "2000Mi"
+            cpu: "500m"
+        env:
+        - name: ENABLE_UWSGI
+          value: "no"
+        - name: ENABLE_NGINX
+          value: "no"
+        - name: ENABLE_CELERY_BEAT
+          value: "no" 
+        - name: ENABLE_MIGRATIONS
+          value: "no"
+        - name: ENABLE_CELERY_SHORT
+          value: "no"
+        - name: ENABLE_CELERY_LONG
+          value: "yes"    
+      #   - name: TASK
+      #     value: worker  
+      #   volumeMounts:
+      #     - mountPath: /code/market_data_service/settings.py
+      #       name: settings
+      #       subPath: settings.py
+      # volumes:
+      #   - name: settings
+      #     configMap:
+      #       name: settings-py
+        volumeMounts:
+        - mountPath: /home/mediacms.io/mediacms/media_files
+          name: mediacms
+          subPath: media_files
+        - mountPath: /home/mediacms.io/mediacms/logs
+          name: mediacms
+          subPath: logs
+        - mountPath: /cms/settings.py
+          name: settings
+          subPath: settings.py
+      volumes:
+        - name: mediacms
+          persistentVolumeClaim:
+              claimName: mediacms
+        - name: settings
+          configMap:
+            name: settings-py   

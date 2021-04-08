@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:9.5
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: POSTGRES_HOST_AUTH_METHOD
+            value: trust
+          - name: POSTGRES_USER
+            value: mediacms  
+          - name: POSTGRES_PASSWORD
+            value: mediacms
+          - name: POSTGRES_DB
+            value: mediacms    
+
+        # volumeMounts:
+        #   - mountPath: /docker-entrypoint-initdb.d
+        #     name: init-db
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5432
+      # volumes:
+      #   - name: init-db
+      #     configMap:
+      #       name: marketdata-init
+

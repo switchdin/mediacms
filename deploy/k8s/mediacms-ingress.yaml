@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+  name: mediacms
+  namespace: mediacms
+spec:
+  rules:
+  - host: [ingress_name]
+    http:
+      paths:
+      - backend:
+          serviceName: web
+          servicePort: 80
+
